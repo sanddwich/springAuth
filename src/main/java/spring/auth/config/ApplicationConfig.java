@@ -20,10 +20,10 @@ import spring.auth.services.UserService;
 public class ApplicationConfig {
 	private final UserService userService;
 
-	@Bean
-	public AuthenticationConfiguration authenticationConfiguration() {
-		return new AuthenticationConfiguration();
-	}
+//	@Bean
+//	public AuthenticationConfiguration authenticationConfiguration() {
+//		return new AuthenticationConfiguration();
+//	}
 
 	@Bean
 	public UserDetailsService userDetailsService() {

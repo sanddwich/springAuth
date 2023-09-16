@@ -1,4 +1,4 @@
-package spring.auth.rest.auth.dao;
+package spring.auth.exception.dao;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequest {
-	private String username;
-	private String password;
+public class ExceptionInfo {
+    private String message;
+    private StackTraceElement[] stackTraceElements;
 }

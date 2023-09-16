@@ -18,8 +18,11 @@ public abstract class AbstractEntity {
     private Integer id;
 
     @CreatedDate
-    private Date createdDate;
+    private Date createdDate = new Date();
 
     @LastModifiedDate
-    private Date modifiedDate;
+    private Date modifiedDate = new Date();
+
+    @PreUpdate
+    public void setLastUpdate() {  modifiedDate = new Date(); }
 }
