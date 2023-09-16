@@ -37,10 +37,9 @@ public class AccessRole extends AbstractEntity {
     @NotEmpty
     private String description;
 
-    //	@JsonIgnore
 //	@ManyToMany(mappedBy = "accessRoles")
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_access_role_lnk",
             joinColumns = {@JoinColumn(name = "role_id")},

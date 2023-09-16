@@ -61,7 +61,7 @@ public class UserService implements BaseDataService<User> {
         return false;
     }
 
-    public boolean resultUserAlreadyExist(User user) {
+    public boolean userAlreadyExist(User user) {
         if (
                 this.userRepository.findByUsernameOrEmail(user.getUsername(), user.getEmail()).isEmpty()
                 || user.getId() == this.userRepository.findByUsernameOrEmail(user.getUsername(), user.getEmail()).stream().findFirst().get().getId()
