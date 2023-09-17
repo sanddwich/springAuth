@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@CrossOrigin(origins = {"http://localhost:3000"})
 @RequiredArgsConstructor
 public class RestApiAuthenticationController {
     private final PasswordEncoder passwordEncoder;
@@ -30,7 +31,7 @@ public class RestApiAuthenticationController {
 
     @GetMapping("/")
     public ResponseEntity index() {
-        return ResponseEntity.ok("Rest Api v1 Hello!");
+        return ResponseEntity.ok("Rest Api v1 Auth Hello!");
     }
 
     @PostMapping("/register")
