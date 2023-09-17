@@ -29,7 +29,7 @@ public class RestApiAuthenticationController {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    @GetMapping("/")
+    @GetMapping({"/", ""})
     public ResponseEntity index() {
         return ResponseEntity.ok("Rest Api v1 Auth Hello!");
     }
@@ -67,6 +67,6 @@ public class RestApiAuthenticationController {
         User user = userService.findByUsername(authenticationRequest.getUsername()).stream().findFirst().get();
         String jwtToken = jwtService.generateToken(user);
 
-        return ResponseEntity.ok(jwtToken);
+        return ResponseEntity.ok(new AuthenticationResponse(jwtToken));
     }
 }

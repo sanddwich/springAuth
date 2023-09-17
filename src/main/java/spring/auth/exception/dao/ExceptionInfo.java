@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ExceptionInfo {
     private String message;
-    private StackTraceElement[] stackTraceElements;
+//    private StackTraceElement[] stackTraceElements;
 }

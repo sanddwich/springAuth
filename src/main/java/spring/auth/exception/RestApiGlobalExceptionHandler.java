@@ -19,9 +19,9 @@ public class RestApiGlobalExceptionHandler {
         return new ResponseEntity<>(
                 ExceptionInfo.builder()
                 .message(exception.getMessage())
-                .stackTraceElements(exception.getStackTrace())
+//                .stackTraceElements(exception.getStackTrace())
                 .build(),
-                HttpStatus.BAD_REQUEST
+                HttpStatus.FORBIDDEN
         );
     }
 }

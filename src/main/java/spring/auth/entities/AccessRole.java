@@ -39,7 +39,7 @@ public class AccessRole extends AbstractEntity {
 
 //	@ManyToMany(mappedBy = "accessRoles")
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_access_role_lnk",
             joinColumns = {@JoinColumn(name = "role_id")},
@@ -47,7 +47,7 @@ public class AccessRole extends AbstractEntity {
     )
     private List<User> users;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "access_role_privilege_lnk",
             joinColumns = {@JoinColumn(name = "access_role_id")},
