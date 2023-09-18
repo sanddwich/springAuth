@@ -43,6 +43,12 @@ public class User extends AbstractEntity implements UserDetails {
     @NotNull
     private boolean active;
 
+    @NotNull
+    private String name;
+
+    @NotNull
+    private String surname;
+
     @ManyToMany(fetch = FetchType.EAGER
 //	  cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}
     )
@@ -66,13 +72,6 @@ public class User extends AbstractEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-//        List<String> privilegesStringList = accessRoles
-//          .stream()
-//          .map(AccessRole::getPrivileges)
-//          .flatMap(Collection::stream)
-//          .map(privilege -> privilege.getCode())
-//          .collect(Collectors.toList());
-
         List<SimpleGrantedAuthority> privilegeList = accessRoles
           .stream()
           .map(AccessRole::getPrivileges)
