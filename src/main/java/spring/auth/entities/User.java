@@ -43,11 +43,10 @@ public class User extends AbstractEntity implements UserDetails {
     @NotNull
     private boolean active;
 
-    @NotNull
     private String name;
-
-    @NotNull
     private String surname;
+    @JsonIgnore
+    private String accessToken;
 
     @ManyToMany(fetch = FetchType.EAGER
 //	  cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}

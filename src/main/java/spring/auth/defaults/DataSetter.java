@@ -38,7 +38,7 @@ public class DataSetter {
 	private void createUser() {
 		User user = new User(
 				"admin", "bck-dkiselev@yandex.ru", passwordEncoder.encode("admin"),
-				true, "Denis", "Kiselev", accessRoleList
+				true, "Denis", "Kiselev", null, accessRoleList
 		);
 
 		admin = getUser(user);

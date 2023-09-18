@@ -33,78 +33,77 @@ import java.util.stream.Stream;
 @CrossOrigin(origins = {"http://localhost:3000"})
 @RequiredArgsConstructor
 public class RestApiAuthenticationController {
-	private final PasswordEncoder passwordEncoder;
-	private final UserService userService;
-	private final JwtService jwtService;
-	private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
-	@GetMapping({"/", ""})
-	public ResponseEntity index() {
-		return ResponseEntity.ok("Rest Api v1 Auth Hello!");
-	}
+    @GetMapping({"/", ""})
+    public ResponseEntity index() {
+        return ResponseEntity.ok("Rest Api v1 Auth Hello!");
+    }
 
-	@PostMapping("/register")
-	public ResponseEntity register(
-	  @RequestBody RegisterRequest registerRequest
-	) {
-		//var user...
-		User user = User.builder()
-		  .username(registerRequest.getUsername())
-		  .email(registerRequest.getEmail())
-		  .active(true)
-		  .accessRoles(Collections.EMPTY_LIST)
-		  .password(passwordEncoder.encode(registerRequest.getPassword()))
-		  .build();
+    @PostMapping("/register")
+    public ResponseEntity register(
+            @RequestBody RegisterRequest registerRequest
+    ) {
+        //var user...
+        User user = User.builder()
+                .username(registerRequest.getUsername())
+                .email(registerRequest.getEmail())
+                .active(true)
+                .accessRoles(Collections.EMPTY_LIST)
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .build();
 
-		userService.save(user);
+        userService.save(user);
 
-		AuthenticationResponse authenticationResponse = generateAuthenticationResponse(
-		  jwtService.generateToken(user), user
-		);
+        AuthenticationResponse authenticationResponse = generateAuthenticationResponse(
+                jwtService.generateToken(user), user
+        );
 
-		return ResponseEntity.ok(authenticationResponse);
-	}
+        return ResponseEntity.ok(authenticationResponse);
+    }
 
-	@PostMapping("/authenticate")
-	public ResponseEntity register(
-	  @RequestBody AuthenticationRequest authenticationRequest
-	) {
-		authenticationManager.authenticate(
-		  new UsernamePasswordAuthenticationToken(
-			authenticationRequest.getUsername(),
-			authenticationRequest.getPassword()
-		  )
-		);
+    @PostMapping("/authenticate")
+    public ResponseEntity register(
+            @RequestBody AuthenticationRequest authenticationRequest
+    ) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        authenticationRequest.getUsername(),
+                        authenticationRequest.getPassword()
+                )
+        );
 
-		User user = userService.findByUsername(authenticationRequest.getUsername()).stream().findFirst().get();
+        User user = userService.findByUsername(authenticationRequest.getUsername()).stream().findFirst().get();
+        AuthenticationResponse authenticationResponse = generateAuthenticationResponse(
+                jwtService.generateToken(user), user
+        );
 
-		AuthenticationResponse authenticationResponse = generateAuthenticationResponse(
-		  jwtService.generateToken(user), user
-		);
+        return ResponseEntity.ok(authenticationResponse);
+    }
 
-		return ResponseEntity.ok(authenticationResponse);
-	}
+    public void updateToken(String token) {
+    }
 
-	public void updateToken(String token) {
-	}
+    private AuthenticationResponse generateAuthenticationResponse(String token, User user) {
+        UserOutput userOutput = UserOutput.builder()
+                .username(user.getUsername())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .email(user.getEmail())
+                .privileges(
+                        user
+                                .getAuthorities()
+                                .stream()
+                                .map(grantedAuthority -> grantedAuthority.getAuthority())
+                                .collect(Collectors.toList())
+                )
+                .build();
 
-	private AuthenticationResponse generateAuthenticationResponse(String token, User user) {
-		UserOutput userOutput = UserOutput.builder()
-		  .username(user.getUsername())
-		  .name(user.getName())
-		  .surname(user.getSurname())
-		  .email(user.getEmail())
-		  .privileges(
-			user
-			  .getAuthorities()
-			  .stream()
-			  .map(grantedAuthority -> grantedAuthority.getAuthority())
-			  .collect(Collectors.toList())
-		  )
-		  .build();
-
-		return new AuthenticationResponse(
-		  token, userOutput
-		);
-	}
+        return new AuthenticationResponse(
+                token, userOutput
+        );
+    }
 }
