@@ -24,3 +24,7 @@ application:
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
+  urls:
+    front-url: http://localhost:3000
+    auth-url: /api/v1/auth/**
+    admin-panel-url: /api/v1/admin/

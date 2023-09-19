@@ -2,6 +2,7 @@ package spring.auth.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,12 +14,29 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import spring.auth.services.UserService;
 
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
 	private final UserService userService;
+	@Value("${application.urls.front-url}")
+	public String FRONT_URL;
+
+	@Bean
+	public WebMvcConfigurer cors() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry
+						.addMapping("/**")
+						.allowedOrigins(FRONT_URL)
+						.allowedMethods("*");
+			}
+		};
+	}
 
 	@Bean
 	public UserDetailsService userDetailsService() {

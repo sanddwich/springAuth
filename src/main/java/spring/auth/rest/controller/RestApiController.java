@@ -15,13 +15,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+//@CrossOrigin(origins = {"http://localhost:3000"})
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:3000"})
 public class RestApiController {
     private final JwtService jwtService;
-    private final UserService userService;
 
     @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/getExample")
