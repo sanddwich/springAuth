@@ -17,6 +17,7 @@ import spring.auth.entities.User;
 import spring.auth.services.UserService;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtService jwtService;
 	private final UserDetailsService userDetailsService;
+	private final UserService userService;
 
 	@Override
 	protected void doFilterInternal(
@@ -41,25 +43,54 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		}
 
 		jwtToken = authenticationHeader.substring(7);
-		username = jwtService.extractUsername(jwtToken);
+		username = getUsernameFromJWT(jwtToken);
+		User dbUser = getDBUser(username);
 
-		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-			UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-			if (jwtService.isTokenValid(jwtToken, userDetails)) {
-				UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-				  userDetails,
-				  null,
-				  userDetails.getAuthorities()
-				);
+		if (username != null && dbUser != null) {
+			if (!dbUser.getAccessToken().equals(jwtToken)) {
+				filterChain.doFilter(request, response);
+				return;
+			}
 
-				authenticationToken.setDetails(
-				  new WebAuthenticationDetailsSource().buildDetails(request)
-				);
-
-				SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+			if (SecurityContextHolder.getContext().getAuthentication() == null) {
+				securityAuthenticate(username, jwtToken, request);
 			}
 		}
 
 		filterChain.doFilter(request, response);
+	}
+
+	private void securityAuthenticate(String username, String jwtToken, HttpServletRequest request) {
+		UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+
+		if (jwtService.isTokenValid(jwtToken, userDetails)) {
+			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+			  userDetails.getUsername(),
+			  null,
+			  userDetails.getAuthorities()
+			);
+			authenticationToken.setDetails(
+			  new WebAuthenticationDetailsSource().buildDetails(request)
+			);
+
+			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+		}
+	}
+
+	private String getUsernameFromJWT(String token) {
+		try {
+			return jwtService.extractUsername(token);
+		} catch(Exception e) {}
+
+		return null;
+	}
+
+	private User getDBUser(String username) {
+		if (username != null) {
+			List<User> userList = userService.findByUsername(username);
+			if (!userList.isEmpty()) return userList.stream().findFirst().get();
+		}
+
+		return null;
 	}
 }

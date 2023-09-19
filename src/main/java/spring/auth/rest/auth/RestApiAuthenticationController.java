@@ -46,7 +46,7 @@ public class RestApiAuthenticationController {
     @PostMapping("/register")
     public ResponseEntity register(
             @RequestBody RegisterRequest registerRequest
-    ) {
+    ) throws Exception {
         //var user...
         User user = User.builder()
                 .username(registerRequest.getUsername())
@@ -56,7 +56,9 @@ public class RestApiAuthenticationController {
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .build();
 
-        userService.save(user);
+        user = this.userService.save(user);
+
+        if (user == null) throw new Exception("Save Error user");
 
         AuthenticationResponse authenticationResponse = generateAuthenticationResponse(
                 jwtService.generateToken(user), user
@@ -68,7 +70,7 @@ public class RestApiAuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity register(
             @RequestBody AuthenticationRequest authenticationRequest
-    ) {
+    ) throws Exception {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authenticationRequest.getUsername(),
@@ -78,16 +80,16 @@ public class RestApiAuthenticationController {
 
         User user = userService.findByUsername(authenticationRequest.getUsername()).stream().findFirst().get();
         AuthenticationResponse authenticationResponse = generateAuthenticationResponse(
-                jwtService.generateToken(user), user
+          jwtService.generateToken(user), user
         );
+
+        user.setAccessToken(authenticationResponse.getToken());
+        userService.update(user);
 
         return ResponseEntity.ok(authenticationResponse);
     }
 
-    public void updateToken(String token) {
-    }
-
-    private AuthenticationResponse generateAuthenticationResponse(String token, User user) {
+    private AuthenticationResponse generateAuthenticationResponse(String token, User user) throws Exception {
         UserOutput userOutput = UserOutput.builder()
                 .username(user.getUsername())
                 .name(user.getName())
