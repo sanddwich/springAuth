@@ -27,21 +27,37 @@ public class DataSetter {
 	private List<AccessRole> accessRoleList;
 	private List<Privilege> privilegeList;
 	private User admin;
+	private User user;
 
 	@Bean
 	private void createData() {
-		createPrivilegeList();
-		createAccessRoleList();
+		String admin = "ADMIN";
+		String user = "USER";
+		createPrivilegeList(admin);
+		createAccessRoleList(admin);
+		createAdmin();
+
+		createPrivilegeList(user);
+		createAccessRoleList(user);
 		createUser();
 	}
 
-	private void createUser() {
+	private void createAdmin() {
 		User user = new User(
 				"admin", "bck-dkiselev@yandex.ru", passwordEncoder.encode("admin"),
 				true, "Denis", "Kiselev", null, accessRoleList
 		);
 
-		admin = getUser(user);
+		this.admin = getUser(user);
+	}
+
+	private void createUser() {
+		User user = new User(
+		  "user", "user@yandex.ru", passwordEncoder.encode("user"),
+		  true, "Иван", "Иванов", null, accessRoleList
+		);
+
+		this.user = getUser(user);
 	}
 
 	private User getUser(User user) {
@@ -51,9 +67,9 @@ public class DataSetter {
 		return dbUserList.stream().findFirst().get();
 	}
 
-	private void createPrivilegeList() {
+	private void createPrivilegeList(String code) {
 		List<Privilege> privilegeListTMP = Stream.of(
-				new Privilege("ADMIN", "ADMIN", "ADMIN ACCESS")
+				new Privilege(code, code, code + " ACCESS")
 		).collect(Collectors.toList());
 
 		privilegeList = privilegeListTMP
@@ -69,9 +85,9 @@ public class DataSetter {
 		return dbPrivilegeList.stream().findFirst().get();
 	}
 
-	private void createAccessRoleList() {
+	private void createAccessRoleList(String code) {
 		List<AccessRole> accessRoleListTMP = Stream.of(
-				new AccessRole("ADMIN", "ADMIN", "ADMIN ROLE", privilegeList)
+				new AccessRole(code, code, code + " ACCESS", privilegeList)
 		).collect(Collectors.toList());
 
 		accessRoleList = accessRoleListTMP

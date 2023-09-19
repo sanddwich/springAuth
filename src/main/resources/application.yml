@@ -13,5 +13,14 @@ spring:
         format_sql: true
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
+    
 server:
   port: 8000
+
+application:
+  security:
+    jwt:
+      secret-key: 69caf277b2bf041e70723d2bc4c414552bba8b3cb514933a7a7ca73c5084adce
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days

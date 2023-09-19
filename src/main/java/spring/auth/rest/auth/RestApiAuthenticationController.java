@@ -39,7 +39,7 @@ public class RestApiAuthenticationController {
     private final AuthenticationManager authenticationManager;
 
     @GetMapping({"/", ""})
-    public ResponseEntity index() {
+    public ResponseEntity index() throws Exception {
         return ResponseEntity.ok("Rest Api v1 Auth Hello!");
     }
 

@@ -61,6 +61,13 @@ public class UserService implements BaseDataService<User> {
 		return false;
 	}
 
+	public User findByAccessToken(String val) {
+		List<User> userList = this.userRepository.findByAccessToken(val);
+		if (!userList.isEmpty()) return userList.stream().findFirst().get();
+
+		return null;
+	}
+
 	public boolean userAlreadyExist(User user) {
 		if (
 		  this.userRepository.findByUsernameOrEmail(user.getUsername(), user.getEmail()).isEmpty()

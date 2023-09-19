@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import spring.auth.config.JwtService;
 import spring.auth.rest.auth.dao.AuthenticationRequest;
@@ -22,16 +23,19 @@ public class RestApiController {
     private final JwtService jwtService;
     private final UserService userService;
 
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/getExample")
     public ResponseEntity getExample() {
         return ResponseEntity.ok("getExample");
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/postExample")
     public ResponseEntity postExample() {
         return ResponseEntity.ok("postExample");
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/getClaims")
     public ResponseEntity getClaims(@RequestBody TokenRequest tokenRequest) {
         String token = tokenRequest.getToken();
