@@ -1,6 +1,7 @@
 package spring.auth.rest.auth;
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +17,8 @@ import spring.auth.rest.auth.dao.UserOutput;
 import spring.auth.services.UserService;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 //@CrossOrigin(origins = {"http://localhost:3000"})
@@ -58,7 +61,7 @@ public class RestApiAuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity register(
+    public ResponseEntity authenticate(
             @RequestBody AuthenticationRequest authenticationRequest
     ) throws Exception {
         authenticationManager.authenticate(

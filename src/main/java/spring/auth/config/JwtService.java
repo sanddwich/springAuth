@@ -108,7 +108,7 @@ public class JwtService {
 
     private boolean isTokenAtDB(String token) {
         User user = userService.findByAccessToken(token);
-        if (user != null) return true;
+        if (user != null && user.getUsername().equals(extractUsername(token))) return true;
 
         return false;
     }
