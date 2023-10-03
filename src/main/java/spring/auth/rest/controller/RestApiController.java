@@ -15,20 +15,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-//@CrossOrigin(origins = {"http://localhost:3000"})
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/service")
 @RequiredArgsConstructor
 public class RestApiController {
     private final JwtService jwtService;
 
-    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/getExample")
     public ResponseEntity getExample() {
         return ResponseEntity.ok("getExample");
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/postExample")
     public ResponseEntity postExample() {
         return ResponseEntity.ok("postExample");

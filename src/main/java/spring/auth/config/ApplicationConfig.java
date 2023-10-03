@@ -31,9 +31,10 @@ public class ApplicationConfig {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry
-						.addMapping("/**")
-						.allowedOrigins(FRONT_URL)
-						.allowedMethods("*");
+				  .addMapping("/**")
+				  .allowedOrigins(FRONT_URL)
+				  .allowedMethods("*")
+				  .allowedHeaders("*");
 			}
 		};
 	}

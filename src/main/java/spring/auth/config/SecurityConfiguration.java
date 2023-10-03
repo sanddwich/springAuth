@@ -21,40 +21,42 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 @EnableMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfiguration {
-    private final JwtAuthenticationFilter jwtAuthFilter;
-    private final AuthenticationProvider authenticationProvider;
+	private final JwtAuthenticationFilter jwtAuthFilter;
+	private final AuthenticationProvider authenticationProvider;
 
-    @Value("${application.urls.auth-url}")
-    public String AUTH_URL;
-    @Value("${application.urls.admin-panel-url}")
-    public String ADMIN_PANEL_URL;
+	@Value("${application.urls.auth-url}")
+	public String AUTH_URL;
+	@Value("${application.urls.admin-panel-url}")
+	public String ADMIN_PANEL_URL;
 
 //	private final LogoutHandler logoutHandler;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http
-                .csrf()
-                .disable()
-                .authorizeHttpRequests()
-                .requestMatchers(AUTH_URL)
-                .permitAll()
-                .requestMatchers(ADMIN_PANEL_URL)
-                .hasAuthority("ADMIN")
-                .anyRequest()
-                .authenticated()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+		http
+		  .cors()
+		  .and()
+		  .csrf()
+		  .disable()
+		  .authorizeHttpRequests()
+		  .requestMatchers(AUTH_URL)
+		  .permitAll()
+		  .requestMatchers(ADMIN_PANEL_URL)
+		  .hasAuthority("ADMIN")
+		  .anyRequest()
+		  .authenticated()
+		  .and()
+		  .sessionManagement()
+		  .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		  .and()
+		  .authenticationProvider(authenticationProvider)
+		  .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 //		  .logout()
 //		  .logoutUrl("/api/v1/auth/logout")
 //		  .addLogoutHandler(logoutHandler)
 //		  .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext());
 
-        return http.build();
-    }
+		return http.build();
+	}
 }
