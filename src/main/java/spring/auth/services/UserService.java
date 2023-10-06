@@ -79,6 +79,18 @@ public class UserService implements BaseDataService<User> {
 		return true;
 	}
 
+	public boolean clearAccessToken(User user) {
+		try {
+			user.setAccessToken(null);
+			this.update(user);
+			return true;
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		return false;
+	}
+
 	public List<User> findByUsername(String username) {
 		return this.userRepository.findByUsername(username);
 	}

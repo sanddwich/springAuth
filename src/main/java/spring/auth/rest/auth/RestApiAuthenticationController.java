@@ -6,18 +6,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import spring.auth.config.JwtService;
 import spring.auth.entities.User;
-import spring.auth.rest.auth.dao.AuthenticationRequest;
-import spring.auth.rest.auth.dao.AuthenticationResponse;
-import spring.auth.rest.auth.dao.RegisterRequest;
-import spring.auth.rest.auth.dao.UserOutput;
+import spring.auth.rest.auth.dao.*;
 import spring.auth.services.UserService;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -34,6 +33,23 @@ public class RestApiAuthenticationController {
     @GetMapping({"/", ""})
     public ResponseEntity index() throws Exception {
         return ResponseEntity.ok("Rest Api v1 Auth Hello!");
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity logout(
+      @RequestBody TokenRequest tokenRequest
+    ) throws Exception {
+        User user = this.userService.findByAccessToken(tokenRequest.getToken());
+        boolean res = false;
+
+        if (user != null) {
+           SecurityContextHolder.clearContext();
+           res = this.userService.clearAccessToken(user);
+        }
+
+        Map<String,Object> response = new HashMap<>();
+        response.put("result", res);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/register")
