@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import spring.auth.entities.User;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -22,4 +22,5 @@ public class UpdateUserRequest {
 	private String password;
 	private String email;
 	private boolean active;
+	private List<UpdateAccessRoleRequest> accessRoles;
 }
