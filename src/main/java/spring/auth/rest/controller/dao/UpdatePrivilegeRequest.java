@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdatePrivilegeRequest {
+	private Integer id;
 	private String name;
 	private String code;
 	private String description;

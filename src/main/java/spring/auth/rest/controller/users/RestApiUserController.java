@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import spring.auth.entities.User;
 import spring.auth.rest.controller.dao.UpdateUserRequest;
+import spring.auth.rest.controller.mappers.UserMapper;
 import spring.auth.services.UserService;
 
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class RestApiUserController {
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @GetMapping({"/", ""})
     public ResponseEntity index() {
@@ -27,12 +29,14 @@ public class RestApiUserController {
 
     @RequestMapping(method = {RequestMethod.PATCH}, value = {"/{id}", "{id}"})
     public ResponseEntity patchUser(
-      @PathVariable String id,
-      @RequestBody UpdateUserRequest updateUserRequest
-    ) {
-        System.out.println("updateUserRequest: " + updateUserRequest.toString());
+            @PathVariable String id,
+            @RequestBody UpdateUserRequest updateUserRequest
+    ) throws Exception {
+        Map<String, User> response = new HashMap<>();
+        User user = this.userMapper.mapUser(updateUserRequest);
+        response.put("user", user);
 
-        return ResponseEntity.ok("User is patched!");
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping({"/get_all", "/get_all/"})
