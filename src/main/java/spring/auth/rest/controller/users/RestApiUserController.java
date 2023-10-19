@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import spring.auth.entities.User;
 import spring.auth.rest.controller.dao.OperationUserRequest;
+import spring.auth.rest.controller.dao.RequestSearchData;
 import spring.auth.rest.controller.dao.UpdateUserRequest;
 import spring.auth.rest.controller.inserters.UserInserter;
 import spring.auth.rest.controller.mappers.UserMapper;
@@ -41,7 +42,7 @@ public class RestApiUserController {
         return ResponseEntity.ok(response);
     }
 
-    @RequestMapping(method = {RequestMethod.DELETE}, value = {"/delete"})
+    @RequestMapping(method = {RequestMethod.POST}, value = {"/delete"})
     public ResponseEntity delete(
       @RequestBody UpdateUserRequest updateUserRequest
     ) throws Exception {
@@ -77,6 +78,19 @@ public class RestApiUserController {
     public ResponseEntity getAll() {
         Map<String, List<User>> response = new HashMap<>();
         response.put("users", this.userService.findAll());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @RequestMapping(method = {RequestMethod.POST}, value = {"/find"})
+    public ResponseEntity find(
+      @RequestBody RequestSearchData requestSearchData
+    ) throws Exception {
+        Map<String, List<User>> response = new HashMap<>();
+        List<User> userList = requestSearchData.getSearchTerm().equals("")
+            ? this.userService.findAll()
+            : this.userService.search(requestSearchData.getSearchTerm());
+        response.put("users", userList);
 
         return ResponseEntity.ok(response);
     }
