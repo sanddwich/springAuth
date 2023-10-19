@@ -59,17 +59,6 @@ public class User extends AbstractEntity implements UserDetails {
     private List<AccessRole> accessRoles;
 
     @Override
-    public String toString() {
-        return "\nUser{" +
-                "username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", active=" + active +
-                ", accessRoles=" + accessRoles +
-                '}';
-    }
-
-    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> privilegeList = accessRoles
           .stream()
@@ -109,5 +98,17 @@ public class User extends AbstractEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+          "username='" + username + '\'' +
+          ", email='" + email + '\'' +
+          ", password='" + password + '\'' +
+          ", active=" + active +
+          ", name='" + name + '\'' +
+          ", surname='" + surname + '\'' +
+          '}';
     }
 }

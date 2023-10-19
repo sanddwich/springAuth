@@ -40,8 +40,8 @@ public class UserMapper {
 
     private void mapUsername(UpdateUserRequest updateUserRequest, User user) throws Exception {
         if (!updateUserRequest.getUsername().equals(user.getUsername())) {
-            User tmpUser = this.userService.findByUsername(updateUserRequest.getUsername()).stream().findFirst().get();
-            if (tmpUser != null) throw new Exception(
+            List<User> userList = this.userService.findByUsername(updateUserRequest.getUsername());
+            if (!userList.isEmpty()) throw new Exception(
                     "Other user with username '" + updateUserRequest.getUsername() + "' already exist!"
             );
 
@@ -51,8 +51,8 @@ public class UserMapper {
 
     private void mapEmail(UpdateUserRequest updateUserRequest, User user) throws Exception {
         if (!updateUserRequest.getEmail().equals(user.getEmail())) {
-            User tmpUser = this.userService.findByEmail(updateUserRequest.getEmail()).stream().findFirst().get();
-            if (tmpUser != null) throw new Exception(
+            List<User> userList = this.userService.findByEmail(updateUserRequest.getEmail());
+            if (!userList.isEmpty()) throw new Exception(
                     "Other user with email '" + updateUserRequest.getEmail() + "' already exist!"
             );
 
@@ -88,11 +88,13 @@ public class UserMapper {
     private void mapAccessRoles(UpdateUserRequest updateUserRequest, User user) throws Exception {
         List<AccessRole> accessRoleList = new ArrayList<>();
         for(UpdateAccessRoleRequest updateAccessRoleRequest: updateUserRequest.getAccessRoles()) {
-            AccessRole accessRole = this.accessRoleService.findById(updateAccessRoleRequest.getId()).get();
-            if (accessRole == null) throw new Exception(
+            List<AccessRole> accessRoleListTmp = this.accessRoleService.findById(
+              updateAccessRoleRequest.getId()
+            ).stream().toList();
+            if (accessRoleListTmp.isEmpty()) throw new Exception(
                     "AccessRole: " + updateAccessRoleRequest.getCode() + " does not exist!"
             );
-            accessRoleList.add(accessRole);
+            accessRoleList.add(accessRoleListTmp.stream().findFirst().get());
         }
 
         user.setAccessRoles(accessRoleList);
