@@ -44,13 +44,14 @@ public class AccessRoleService implements BaseDataService<AccessRole> {
     }
 
     @Override
-    public boolean delete(AccessRole accessRole) throws DataIntegrityViolationException {
-        if (!this.accessRoleRepository.findById(accessRole.getId()).isEmpty()) {
+    public AccessRole delete(AccessRole accessRole) throws DataIntegrityViolationException {
+        List<AccessRole> accessRoleList = this.accessRoleRepository.findById(accessRole.getId()).stream().toList();
+        if (!accessRoleList.isEmpty()) {
             this.accessRoleRepository.delete(accessRole);
-            return true;
+            return accessRoleList.stream().findFirst().get();
         }
 
-        return false;
+        return null;
     }
 
     public boolean findAccessRoleByNameOrCode(AccessRole accessRole) {

@@ -34,12 +34,31 @@ public class RestApiUserController {
     public ResponseEntity addUser(
       @RequestBody OperationUserRequest operationUserRequest
     ) throws Exception {
-        System.out.println(operationUserRequest.toString());
-//        Map<String, User> response = new HashMap<>();
-//        User user = this.userInserter.insertUser(operationUserRequest);
-//        response.put("user", user);
+        Map<String, User> response = new HashMap<>();
+        User user = this.userInserter.insertUser(operationUserRequest);
+        response.put("user", user);
 
-        return ResponseEntity.ok("addUser");
+        return ResponseEntity.ok(response);
+    }
+
+    @RequestMapping(method = {RequestMethod.DELETE}, value = {"/delete"})
+    public ResponseEntity delete(
+      @RequestBody UpdateUserRequest updateUserRequest
+    ) throws Exception {
+        List<User> userList = this.userService.findById(updateUserRequest.getId()).stream().toList();
+        if (userList.isEmpty()) throw new Exception(
+          "User with ID'" + updateUserRequest.getId().toString() + "' is not founded"
+        );
+
+        User user = this.userService.delete(userList.stream().findFirst().get());
+        if (user == null) throw new Exception(
+          "User with ID'" + updateUserRequest.getId().toString() + "' DELETE ERROR"
+        );
+
+        Map<String, User> response = new HashMap<>();
+        response.put("user", user);
+
+        return ResponseEntity.ok(response);
     }
 
     @RequestMapping(method = {RequestMethod.PATCH}, value = {"/{id}", "{id}"})

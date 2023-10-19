@@ -16,10 +16,10 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class UserInserter {
-	UserService userService;
-	AccessRoleService accessRoleService;
-	BCryptPasswordEncoder bCryptPasswordEncoder;
-	Integer passwordLength = 4;
+	private final UserService userService;
+	private final AccessRoleService accessRoleService;
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+	private final Integer passwordLength = 4;
 
 	public User insertUser(OperationUserRequest operationUserRequest) throws Exception {
 		userCheck(operationUserRequest);
@@ -33,10 +33,12 @@ public class UserInserter {
 		  .accessRoles(this.getAccessRoles(operationUserRequest))
 		  .build();
 
+		this.userService.save(user);
+
 		return user;
 	}
 
-	public List<AccessRole> getAccessRoles(OperationUserRequest operationUserRequest) throws Exception {
+	private List<AccessRole> getAccessRoles(OperationUserRequest operationUserRequest) throws Exception {
 		List<AccessRole> accessRoleList = new ArrayList<>();
 		for(UpdateAccessRoleRequest updateAccessRoleRequest: operationUserRequest.getAccessRoles()) {
 			List<AccessRole> accessRoleListTmp = this.accessRoleService.findById(
@@ -51,7 +53,7 @@ public class UserInserter {
 		return accessRoleList;
 	}
 
-	public void userCheck(OperationUserRequest operationUserRequest) throws Exception {
+	private void userCheck(OperationUserRequest operationUserRequest) throws Exception {
 		checkUsername(operationUserRequest.getUsername());
 		checkEmail(operationUserRequest.getEmail());
 		checkPassword(operationUserRequest.getPassword());
@@ -59,7 +61,7 @@ public class UserInserter {
 		checkSurname(operationUserRequest.getSurname());
 	}
 
-	public void checkUsername(String username) throws Exception {
+	private void checkUsername(String username) throws Exception {
 		if (username == null || username == "") throw new Exception(
 		  "Empty username!"
 		);
@@ -70,7 +72,7 @@ public class UserInserter {
 		);
 	}
 
-	public void checkEmail(String email) throws Exception {
+	private void checkEmail(String email) throws Exception {
 		if (email == null || email == "") throw new Exception(
 		  "Empty email!"
 		);
@@ -81,7 +83,7 @@ public class UserInserter {
 		);
 	}
 
-	public void checkPassword(String password) throws Exception {
+	private void checkPassword(String password) throws Exception {
 		if (password == null || password == "") throw new Exception(
 		  "Empty password!"
 		);
@@ -91,13 +93,13 @@ public class UserInserter {
 		);
 	}
 
-	public void checkName(String name) throws Exception {
+	private void checkName(String name) throws Exception {
 		if (name == null || name == "") throw new Exception(
 		  "Empty name!"
 		);
 	}
 
-	public void checkSurname(String surname) throws Exception {
+	private void checkSurname(String surname) throws Exception {
 		if (surname == null || surname == "") throw new Exception(
 		  "Empty surname!"
 		);

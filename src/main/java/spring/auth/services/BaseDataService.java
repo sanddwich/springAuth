@@ -8,5 +8,5 @@ public interface BaseDataService<T> {
     List<T> findAll();
     List<T> search(String searchTerm);
     T save(T entity) ;
-    boolean delete(T entity) throws DataIntegrityViolationException;
+    T delete(T entity) throws DataIntegrityViolationException;
 }
