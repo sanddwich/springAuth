@@ -8,13 +8,8 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateAccessRoleRequest {
+public class UpdateAccessRoleRequest extends OperationAccessRoleRequest{
 	private Integer id;
-	private String name;
-	private String code;
-	private String description;
-	private List<UpdatePrivilegeRequest> privileges;
 }

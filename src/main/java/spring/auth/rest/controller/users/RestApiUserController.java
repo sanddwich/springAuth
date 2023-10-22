@@ -62,7 +62,7 @@ public class RestApiUserController {
         return ResponseEntity.ok(response);
     }
 
-    @RequestMapping(method = {RequestMethod.PATCH}, value = {"/{id}", "{id}"})
+    @RequestMapping(method = {RequestMethod.PATCH}, value = {"/patch"})
     public ResponseEntity patchUser(
             @PathVariable String id,
             @RequestBody UpdateUserRequest updateUserRequest

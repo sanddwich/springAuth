@@ -2,6 +2,7 @@ package spring.auth.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Builder;
 import lombok.Data;
 
 import jakarta.persistence.*;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Builder
 @Table(indexes = {
         @Index(name = "nameIndex", columnList = "name"),
         @Index(name = "codeIndex", columnList = "code"),

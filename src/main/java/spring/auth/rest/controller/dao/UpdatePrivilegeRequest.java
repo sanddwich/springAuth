@@ -6,12 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdatePrivilegeRequest {
+public class UpdatePrivilegeRequest extends OperationPrivilegeRequest {
 	private Integer id;
-	private String name;
-	private String code;
-	private String description;
 }
