@@ -2,15 +2,20 @@ package spring.auth.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Table(indexes = {
         @Index(name = "nameIndex", columnList = "name"),
@@ -18,16 +23,6 @@ import java.util.List;
         @Index(name = "descriptionIndex", columnList = "description")
 })
 public class AccessRole extends AbstractEntity {
-    public AccessRole() {
-    }
-
-    public AccessRole(@NotEmpty String name, @NotEmpty String code, @NotEmpty String description, List<Privilege> privileges) {
-        this.name = name;
-        this.code = code;
-        this.description = description;
-        this.privileges = privileges;
-    }
-
     @NotEmpty
     @Column(unique = true)
     private String name;

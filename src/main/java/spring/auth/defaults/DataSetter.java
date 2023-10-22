@@ -11,6 +11,7 @@ import spring.auth.services.AccessRoleService;
 import spring.auth.services.PrivilegeService;
 import spring.auth.services.UserService;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -69,7 +70,11 @@ public class DataSetter {
 
 	private void createPrivilegeList(String code) {
 		List<Privilege> privilegeListTMP = Stream.of(
-				new Privilege(code, code, code + " ACCESS")
+		  Privilege.builder()
+		    .code(code)
+		    .name(code)
+		    .description(code)
+		    .build()
 		).collect(Collectors.toList());
 
 		privilegeList = privilegeListTMP
@@ -87,7 +92,12 @@ public class DataSetter {
 
 	private void createAccessRoleList(String code) {
 		List<AccessRole> accessRoleListTMP = Stream.of(
-				new AccessRole(code, code, code + " ACCESS", privilegeList)
+				AccessRole.builder()
+				  .name(code)
+				  .code(code)
+				  .description(code)
+				  .privileges(privilegeList)
+				  .build()
 		).collect(Collectors.toList());
 
 		accessRoleList = accessRoleListTMP
