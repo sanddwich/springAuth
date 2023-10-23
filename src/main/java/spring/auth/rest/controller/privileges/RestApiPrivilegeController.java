@@ -45,18 +45,6 @@ public class RestApiPrivilegeController {
 		return ResponseEntity.ok(response);
 	}
 
-	@RequestMapping(method = {RequestMethod.GET}, value = {"{id}", "/{id}"})
-	public ResponseEntity get_privilege(
-	  @PathVariable Integer id
-	) throws Exception {
-		List<Privilege> privilegeList = this.privilegeService.findById(id).stream().toList();
-		if (privilegeList.isEmpty()) throw new Exception("Privilege is not found!");
-		Map<String, Privilege> response = new HashMap<>();
-		response.put("privilege", privilegeList.stream().findFirst().get());
-
-		return ResponseEntity.ok(response);
-	}
-
 	@RequestMapping(method = {RequestMethod.PATCH}, value = {"/patch"})
 	public ResponseEntity patch_access_role(
 	  @RequestBody UpdatePrivilegeRequest updatePrivilegeRequest
@@ -68,7 +56,28 @@ public class RestApiPrivilegeController {
 		return ResponseEntity.ok(response);
 	}
 
-	@RequestMapping(method = {RequestMethod.PATCH}, value = {"/add"})
+	@RequestMapping(method = {RequestMethod.POST}, value = {"/delete"})
+	public ResponseEntity delete(
+	  @RequestBody UpdatePrivilegeRequest updatePrivilegeRequest
+	) throws Exception {
+		List<Privilege> privilegeList = this.privilegeService.findById(updatePrivilegeRequest.getId())
+		  .stream().toList();
+		if (privilegeList.isEmpty()) throw new Exception(
+		  "Privilege with ID'" + updatePrivilegeRequest.getId().toString() + "' is not founded"
+		);
+
+		Privilege privilege = this.privilegeService.delete(privilegeList.stream().findFirst().get());
+		if (privilege == null) throw new Exception(
+		  "Privilege with ID'" + updatePrivilegeRequest.getId().toString() + "' DELETE ERROR"
+		);
+
+		Map<String, Privilege> response = new HashMap<>();
+		response.put("privilege", privilege);
+
+		return ResponseEntity.ok(response);
+	}
+
+	@RequestMapping(method = {RequestMethod.POST}, value = {"/add"})
 	public ResponseEntity addAccessRole(
 	  @RequestBody OperationPrivilegeRequest operationPrivilegeRequest
 	  ) throws Exception {

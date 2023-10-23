@@ -9,6 +9,7 @@ import spring.auth.entities.User;
 import spring.auth.rest.controller.dao.OperationAccessRoleRequest;
 import spring.auth.rest.controller.dao.RequestSearchData;
 import spring.auth.rest.controller.dao.UpdateAccessRoleRequest;
+import spring.auth.rest.controller.dao.UpdateUserRequest;
 import spring.auth.rest.controller.inserters.AccessRoleInserter;
 import spring.auth.rest.controller.mappers.AccessRoleMapper;
 import spring.auth.services.AccessRoleService;
@@ -48,20 +49,8 @@ public class RestApiAccessRolesController {
 		return ResponseEntity.ok(response);
 	}
 
-	@RequestMapping(method = {RequestMethod.GET}, value = {"{id}", "/{id}"})
-	public ResponseEntity get_access_role(
-	  @PathVariable Integer id
-	) throws Exception {
-		List<AccessRole> accessRoleList = this.accessRoleService.findById(id).stream().toList();
-		if (accessRoleList.isEmpty()) throw new Exception("AccessRole is not found!");
-		Map<String, AccessRole> response = new HashMap<>();
-		response.put("accessRole", accessRoleList.stream().findFirst().get());
-
-		return ResponseEntity.ok(response);
-	}
-
 	@RequestMapping(method = {RequestMethod.PATCH}, value = {"/patch"})
-	public ResponseEntity patch_access_role(
+	public ResponseEntity patchAccessRole(
 	  @RequestBody UpdateAccessRoleRequest updateAccessRoleRequest
 	) throws Exception {
 		AccessRole accessRole = this.accessRoleMapper.mapAccessRole(updateAccessRoleRequest);
@@ -71,7 +60,28 @@ public class RestApiAccessRolesController {
 		return ResponseEntity.ok(response);
 	}
 
-	@RequestMapping(method = {RequestMethod.PATCH}, value = {"/add"})
+	@RequestMapping(method = {RequestMethod.POST}, value = {"/delete"})
+	public ResponseEntity delete(
+	  @RequestBody UpdateAccessRoleRequest updateAccessRoleRequest
+	) throws Exception {
+		List<AccessRole> accessRoleList = this.accessRoleService.findById(updateAccessRoleRequest.getId())
+		  .stream().toList();
+		if (accessRoleList.isEmpty()) throw new Exception(
+		  "AccessRole with ID'" + updateAccessRoleRequest.getId().toString() + "' is not founded"
+		);
+
+		AccessRole accessRole = this.accessRoleService.delete(accessRoleList.stream().findFirst().get());
+		if (accessRole == null) throw new Exception(
+		  "AccessRole with ID'" + updateAccessRoleRequest.getId().toString() + "' DELETE ERROR"
+		);
+
+		Map<String, AccessRole> response = new HashMap<>();
+		response.put("accessRole", accessRole);
+
+		return ResponseEntity.ok(response);
+	}
+
+	@RequestMapping(method = {RequestMethod.POST}, value = {"/add"})
 	public ResponseEntity addAccessRole(
 	  @RequestBody OperationAccessRoleRequest operationAccessRoleRequest
 	) throws Exception {
