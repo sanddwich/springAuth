@@ -33,6 +33,21 @@ public class RestApiAccessRolesController {
 		return ResponseEntity.ok(result);
 	}
 
+	@RequestMapping(method = {RequestMethod.GET}, value={"/get/{id}"})
+	public ResponseEntity getAccessRole(
+	  @PathVariable Integer id
+	) throws Exception {
+		List<AccessRole> accessRoleList = this.accessRoleService.findById(id).stream().toList();
+		if (accessRoleList.isEmpty()) throw new Exception(
+		  "AccessRole with id: " + id.toString() + " is not found!"
+		);
+
+		Map<String, AccessRole> response = new HashMap<>();
+		response.put("accessRole", accessRoleList.stream().findFirst().get());
+
+		return ResponseEntity.ok(response);
+	}
+
 	@RequestMapping(method = {RequestMethod.GET}, value = {"{id}", "/{id}"})
 	public ResponseEntity get_access_role(
 	  @PathVariable Integer id

@@ -31,6 +31,19 @@ public class RestApiUserController {
 		return ResponseEntity.ok(result);
 	}
 
+	@RequestMapping(method = {RequestMethod.GET}, value={"/get/{id}"})
+	public ResponseEntity getUser(
+	  @PathVariable Integer id
+	) throws Exception {
+		List<User> userList = this.userService.findById(id).stream().toList();
+		if (userList.isEmpty()) throw new Exception("User with is: " + id.toString() + " id not found!");
+
+		Map<String, User> response = new HashMap<>();
+		response.put("user", userList.stream().findFirst().get());
+
+		return ResponseEntity.ok(response);
+	}
+
 	@RequestMapping(method = {RequestMethod.POST}, value = {"/add"})
 	public ResponseEntity addUser(
 	  @RequestBody OperationUserRequest operationUserRequest

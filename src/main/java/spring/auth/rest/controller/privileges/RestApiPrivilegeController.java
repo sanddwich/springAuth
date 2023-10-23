@@ -30,6 +30,21 @@ public class RestApiPrivilegeController {
 		return ResponseEntity.ok(result);
 	}
 
+	@RequestMapping(method = {RequestMethod.GET}, value={"/get/{id}"})
+	public ResponseEntity getPrivilege(
+	  @PathVariable Integer id
+	) throws Exception {
+		List<Privilege> privilegeList = this.privilegeService.findById(id).stream().toList();
+		if (privilegeList.isEmpty()) throw new Exception(
+		  "Privilege with id: " + id.toString() + " is not found!"
+		);
+
+		Map<String, Privilege> response = new HashMap<>();
+		response.put("privilege", privilegeList.stream().findFirst().get());
+
+		return ResponseEntity.ok(response);
+	}
+
 	@RequestMapping(method = {RequestMethod.GET}, value = {"{id}", "/{id}"})
 	public ResponseEntity get_privilege(
 	  @PathVariable Integer id
