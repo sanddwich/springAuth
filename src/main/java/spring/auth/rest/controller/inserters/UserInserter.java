@@ -77,7 +77,7 @@ public class UserInserter {
 		  "Empty email!"
 		);
 
-		List<User> userList = this.userService.findByUsername(email);
+		List<User> userList = this.userService.findByEmail(email);
 		if (!userList.isEmpty()) throw new Exception(
 		  "Other user with email '" + email + "' already exist!"
 		);
