@@ -32,7 +32,10 @@ public class AccessRoleService implements BaseDataService<AccessRole> {
     public AccessRole save(AccessRole accessRole) {
         if (!this.findAccessRoleByNameOrCode(accessRole)) {
             this.accessRoleRepository.save(accessRole);
-            return this.accessRoleRepository.findByCode(accessRole.getCode()).stream().findFirst().get();
+            return this.accessRoleRepository.findByCode(accessRole.getCode())
+              .stream()
+              .findFirst()
+              .orElse(null);
         }
 
         return null;
