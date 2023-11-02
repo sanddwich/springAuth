@@ -32,11 +32,7 @@ public class PrivilegeService implements BaseDataService<Privilege> {
 	@Override
 	public Privilege save(Privilege privilege) {
 		if (!this.findPrivilegeByNameOrCode(privilege)) {
-			this.privilegeRepository.save(privilege);
-			return this.privilegeRepository.findByCode(privilege.getCode())
-			  .stream()
-			  .findFirst()
-			  .orElse(null);
+			return this.privilegeRepository.save(privilege);
 		}
 
 		return null;
@@ -54,12 +50,8 @@ public class PrivilegeService implements BaseDataService<Privilege> {
 	}
 
 	public boolean findPrivilegeByNameOrCode(Privilege privilege) {
-		if (
-		    !this.privilegeRepository.findByName(privilege.getName()).isEmpty() ||
-			!this.privilegeRepository.findByCode(privilege.getCode()).isEmpty()
-		) return true;
-
-		return false;
+		return !this.privilegeRepository.findByName(privilege.getName()).isEmpty() ||
+		  !this.privilegeRepository.findByCode(privilege.getCode()).isEmpty();
 	}
 
 	public List<Privilege> saveAll(List<Privilege> privileges) {
@@ -70,8 +62,7 @@ public class PrivilegeService implements BaseDataService<Privilege> {
 	}
 
 	public Privilege update(Privilege privilege) {
-		privilegeRepository.save(privilege);
-		return this.privilegeRepository.findByCode(privilege.getCode()).stream().findFirst().get();
+		return privilegeRepository.save(privilege);
 	}
 
 	public boolean isPrivilegeByNameNotExist(Privilege privilege) {

@@ -19,7 +19,7 @@ class PrivilegeRepositoryTest {
 	private String privilegeCode = "TestPrivilegeCode";
 	private String privilegeDescription = "TestPrivilegeDescription";
 
-	private void generatePrivilege() {
+	private void generatePrivilegeAndSaveToDB() {
 		Privilege privilege = Privilege.builder()
 		  .name(privilegeName)
 		  .code(privilegeCode)
@@ -29,12 +29,16 @@ class PrivilegeRepositoryTest {
 		privilegeRepository.save(privilege);
 	}
 
-	private void isAssert(List<Privilege> privilegeList) {
+	private void assertPrivilegeList(List<Privilege> privilegeList) {
 		assertThat(privilegeList.isEmpty()).isFalse();
-		assertThat(privilegeList.stream().findFirst().get()).isInstanceOf(Privilege.class);
-		assertThat(privilegeList.stream().findFirst().get().getCode()).isEqualTo(privilegeCode);
-		assertThat(privilegeList.stream().findFirst().get().getName()).isEqualTo(privilegeName);
-		assertThat(privilegeList.stream().findFirst().get().getDescription()).isEqualTo(privilegeDescription);
+		assertThat(privilegeList.stream().findFirst().orElse(null))
+		  .isInstanceOf(Privilege.class);
+		assertThat(privilegeList.stream().findFirst().orElse(null)
+		  .getCode()).isEqualTo(privilegeCode);
+		assertThat(privilegeList.stream().findFirst().orElse(null)
+		  .getName()).isEqualTo(privilegeName);
+		assertThat(privilegeList.stream().findFirst().orElse(null)
+		  .getDescription()).isEqualTo(privilegeDescription);
 	}
 
 	@AfterEach
@@ -45,48 +49,48 @@ class PrivilegeRepositoryTest {
 	@Test
 	void search() {
 		//given
-		generatePrivilege();
+		generatePrivilegeAndSaveToDB();
 
 		//when
 		List<Privilege> privilegeList = privilegeRepository.search("Privilege");
 
 		//then
-		isAssert(privilegeList);
+		assertPrivilegeList(privilegeList);
 	}
 
 	@Test
 	void findByName() {
 		//given
-		generatePrivilege();
+		generatePrivilegeAndSaveToDB();
 
 		//when
 		List<Privilege> privilegeList = privilegeRepository.findByName(privilegeName);
 
 		//then
-		isAssert(privilegeList);
+		assertPrivilegeList(privilegeList);
 	}
 
 	@Test
 	void findByCode() {
 		//given
-		generatePrivilege();
+		generatePrivilegeAndSaveToDB();
 
 		//when
 		List<Privilege> privilegeList = privilegeRepository.findByCode(privilegeCode);
 
 		//then
-		isAssert(privilegeList);
+		assertPrivilegeList(privilegeList);
 	}
 
 	@Test
 	void findByDescription() {
 		//given
-		generatePrivilege();
+		generatePrivilegeAndSaveToDB();
 
 		//when
 		List<Privilege> privilegeList = privilegeRepository.findByDescription(privilegeDescription);
 
 		//then
-		isAssert(privilegeList);
+		assertPrivilegeList(privilegeList);
 	}
 }
