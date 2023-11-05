@@ -1,7 +1,7 @@
 package spring.auth.repositories;
 
 import org.junit.jupiter.api.AfterEach;
-//import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -10,6 +10,8 @@ import spring.auth.entities.Privilege;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 class PrivilegeRepositoryTest {
@@ -30,15 +32,24 @@ class PrivilegeRepositoryTest {
 	}
 
 	private void assertPrivilegeList(List<Privilege> privilegeList) {
-		assertThat(privilegeList.isEmpty()).isFalse();
+		assertFalse(privilegeList.isEmpty());
 		assertThat(privilegeList.stream().findFirst().orElse(null))
 		  .isInstanceOf(Privilege.class);
-		assertThat(privilegeList.stream().findFirst().orElse(null)
-		  .getCode()).isEqualTo(privilegeCode);
-		assertThat(privilegeList.stream().findFirst().orElse(null)
-		  .getName()).isEqualTo(privilegeName);
-		assertThat(privilegeList.stream().findFirst().orElse(null)
-		  .getDescription()).isEqualTo(privilegeDescription);
+		assertTrue(privilegeList.stream().findFirst()
+		  .map(Privilege::getCode)
+		  .map(privilege -> privilege.equals(privilegeCode))
+		  .orElse(false)
+		);
+		assertTrue(privilegeList.stream().findFirst()
+		  .map(Privilege::getName)
+		  .map(privilege -> privilege.equals(privilegeName))
+		  .orElse(false)
+		);
+		assertTrue(privilegeList.stream().findFirst()
+		  .map(Privilege::getDescription)
+		  .map(desc -> desc.equals(privilegeDescription))
+		  .orElse(false));
+
 	}
 
 	@AfterEach

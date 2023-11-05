@@ -120,10 +120,10 @@ class PrivilegeServiceTest {
 		when(privilegeRepository.findById(privilege.getId()))
 		  .thenReturn(Optional.of(privilege));
 
-		privilegeService.delete(privilege);
 
 		//then
-		assertThat(privilegeService.delete(privilege)).isInstanceOf(Privilege.class);
+		assertEquals(privilege, privilegeService.delete(privilege));
+		verify(privilegeRepository).delete(privilege);
 	}
 
 	@Test

@@ -21,94 +21,97 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(indexes = {
-        @Index(name = "usernameIndex", columnList = "username"),
-        @Index(name = "emailIndex", columnList = "email")
-})
+@Table(
+  name = "\"user\"",
+  indexes = {
+	@Index(name = "usernameIndex", columnList = "username"),
+	@Index(name = "emailIndex", columnList = "email")
+  }
+)
 public class User extends AbstractEntity implements UserDetails {
 
-    @NotEmpty
-    @Column(unique = true)
-    private String username;
+	@NotEmpty
+	@Column(unique = true)
+	private String username;
 
-    @NotEmpty
-    @Email
-    @Column(unique = true)
-    private String email;
+	@NotEmpty
+	@Email
+	@Column(unique = true)
+	private String email;
 
-    @JsonIgnore
-    @NotEmpty
-    private String password;
+	@JsonIgnore
+	@NotEmpty
+	private String password;
 
-    @NotNull
-    private boolean active;
+	@NotNull
+	private boolean active;
 
-    private String name;
-    private String surname;
-    @JsonIgnore
-    private String accessToken;
+	private String name;
+	private String surname;
+	@JsonIgnore
+	private String accessToken;
 
-    @ManyToMany(fetch = FetchType.EAGER
+	@ManyToMany(fetch = FetchType.EAGER
 //	  cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}
-    )
-    @JoinTable(
-            name = "user_access_role_lnk",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id")}
-    )
-    private List<AccessRole> accessRoles;
+	)
+	@JoinTable(
+	  name = "user_access_role_lnk",
+	  joinColumns = {@JoinColumn(name = "user_id")},
+	  inverseJoinColumns = {@JoinColumn(name = "role_id")}
+	)
+	private List<AccessRole> accessRoles;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> privilegeList = accessRoles
-          .stream()
-          .map(AccessRole::getPrivileges)
-          .flatMap(Collection::stream)
-          .map(privilege -> new SimpleGrantedAuthority(privilege.getCode()))
-          .collect(Collectors.toList());
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<SimpleGrantedAuthority> privilegeList = accessRoles
+		  .stream()
+		  .map(AccessRole::getPrivileges)
+		  .flatMap(Collection::stream)
+		  .map(privilege -> new SimpleGrantedAuthority(privilege.getCode()))
+		  .collect(Collectors.toList());
 
-        return privilegeList;
-    }
+		return privilegeList;
+	}
 
-    @Override
-    public String getUsername() {
-        return username;
-    }
+	@Override
+	public String getUsername() {
+		return username;
+	}
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
+	@Override
+	public String getPassword() {
+		return password;
+	}
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 
-    @Override
-    public String toString() {
-        return "User{" +
-          "username='" + username + '\'' +
-          ", email='" + email + '\'' +
-          ", password='" + password + '\'' +
-          ", active=" + active +
-          ", name='" + name + '\'' +
-          ", surname='" + surname + '\'' +
-          '}';
-    }
+	@Override
+	public String toString() {
+		return "User{" +
+		  "username='" + username + '\'' +
+		  ", email='" + email + '\'' +
+		  ", password='" + password + '\'' +
+		  ", active=" + active +
+		  ", name='" + name + '\'' +
+		  ", surname='" + surname + '\'' +
+		  '}';
+	}
 }
