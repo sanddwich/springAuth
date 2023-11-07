@@ -5,6 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import spring.auth.entities.AccessRole;
 import spring.auth.repositories.AccessRoleRepository;
+import spring.auth.repositories.PrivilegeRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,19 +43,16 @@ public class AccessRoleService implements BaseDataService<AccessRole> {
     }
 
     public AccessRole update(AccessRole accessRole) {
-        accessRoleRepository.save(accessRole);
-        return accessRoleRepository.findById(accessRole.getId()).stream().findFirst().get();
+        return accessRoleRepository.save(accessRole);
     }
 
     @Override
     public AccessRole delete(AccessRole accessRole) throws DataIntegrityViolationException {
-        List<AccessRole> accessRoleList = this.accessRoleRepository.findById(accessRole.getId()).stream().toList();
-        if (!accessRoleList.isEmpty()) {
-            this.accessRoleRepository.delete(accessRole);
-            return accessRoleList.stream().findFirst().get();
-        }
+        Optional<AccessRole> accessRoleOptional = this.accessRoleRepository.findById(accessRole.getId());
+        accessRoleOptional
+                .ifPresent(accessRoleRepository::delete);
 
-        return null;
+        return accessRoleOptional.orElse(null);
     }
 
     public boolean findAccessRoleByNameOrCode(AccessRole accessRole) {
@@ -76,10 +74,6 @@ public class AccessRoleService implements BaseDataService<AccessRole> {
 
     public List<AccessRole> findByDescription(String description) {
         return this.accessRoleRepository.findByDescription(description);
-    }
-
-    public void saveAll(List<AccessRole> accessRoleList) {
-
     }
 
     public Optional<AccessRole> findById(Integer id) {
