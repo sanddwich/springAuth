@@ -112,27 +112,82 @@ class AccessRoleServiceTest {
     }
 
     @Test
-    @Disabled
-    void findAccessRoleByNameOrCode() {
+    void findAccessRoleByNameOrCodeError() {
+        //given
+        AccessRole accessRole = createAccessRole();
+
+        //when
+        accessRoleService.findAccessRoleByNameOrCode(accessRole);
+        when(accessRoleRepository.findByName(accessRole.getName()))
+                .thenReturn(Collections.emptyList());
+        when(accessRoleRepository.findByCode(accessRole.getCode()))
+                .thenReturn(Collections.emptyList());
+
+        //then
+        assertFalse(accessRoleService.findAccessRoleByNameOrCode(accessRole));
     }
 
     @Test
-    @Disabled
+    void findAccessRoleByNameOrCodeSuccess() {
+        //given
+        AccessRole accessRole = createAccessRole();
+
+        //when
+        accessRoleService.findAccessRoleByNameOrCode(accessRole);
+        when(accessRoleRepository.findByName(accessRole.getName()))
+                .thenReturn(Collections.singletonList(accessRole));
+
+        //then
+        assertTrue(accessRoleService.findAccessRoleByNameOrCode(accessRole));
+    }
+
+    @Test
+    void findAccessRoleByNameOrCodeSuccess2() {
+        //given
+        AccessRole accessRole = createAccessRole();
+
+        //when
+        accessRoleService.findAccessRoleByNameOrCode(accessRole);
+        when(accessRoleRepository.findByCode(accessRole.getCode()))
+                .thenReturn(Collections.singletonList(accessRole));
+
+        //then
+        assertTrue(accessRoleService.findAccessRoleByNameOrCode(accessRole));
+    }
+
+    @Test
     void findByName() {
+        //when
+        accessRoleService.findByName(Mockito.anyString());
+
+        //then
+        verify(accessRoleRepository).findByName(Mockito.anyString());
     }
 
     @Test
-    @Disabled
     void findByCode() {
+        //when
+        accessRoleService.findByCode(Mockito.anyString());
+
+        //then
+        verify(accessRoleRepository).findByCode(Mockito.anyString());
     }
 
     @Test
-    @Disabled
     void findByDescription() {
+        //when
+        accessRoleService.findByDescription(Mockito.anyString());
+
+        //then
+        verify(accessRoleRepository).findByDescription(Mockito.anyString());
     }
 
     @Test
-    @Disabled
     void findById() {
+        //when
+        accessRoleService.findById(Mockito.anyInt());
+
+        //then
+        verify(accessRoleRepository).findById(Mockito.anyInt());
     }
 }
