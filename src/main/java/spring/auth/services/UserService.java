@@ -35,7 +35,7 @@ public class UserService implements BaseDataService<User> {
 			return this.userRepository.findByUsername(user.getUsername())
 			  .stream()
 			  .findFirst()
-			  .get();
+			  .orElse(null);
 		}
 
 		return null;
@@ -43,18 +43,15 @@ public class UserService implements BaseDataService<User> {
 
 	@Override
 	public User delete(User user) throws DataIntegrityViolationException {
-		List<User> userList = this.userRepository.findById(user.getId()).stream().toList();
-		if (!userList.isEmpty()) {
-			this.userRepository.delete(user);
-			return userList.stream().findFirst().get();
-		}
+		Optional<User> userList = this.userRepository.findById(user.getId());
+		userList
+		  .ifPresent(userRepository::delete);
 
-		return null;
+		return userList.orElse(null);
 	}
 
 	public User update(User user) {
-		this.userRepository.save(user);
-		return this.userRepository.findByUsername(user.getUsername()).stream().findFirst().get();
+		return this.userRepository.save(user);
 	}
 
 	public boolean findByUsernameOREmail(User user) {
@@ -73,14 +70,11 @@ public class UserService implements BaseDataService<User> {
 	}
 
 	public boolean userAlreadyExist(User user) {
-		if (
-		  this.userRepository.findByUsernameOrEmail(user.getUsername(), user.getEmail()).isEmpty()
-			|| user.getId() == this.userRepository.findByUsernameOrEmail(user.getUsername(), user.getEmail()).stream().findFirst().get().getId()
-		) {
-			return false;
-		}
-
-		return true;
+	  return userRepository.findByUsernameOrEmail(user.getUsername(), user.getEmail())
+	    .stream()
+	    .map(user1 -> user1.getId() == user.getId())
+	    .findFirst()
+	    .orElse(false);
 	}
 
 	public boolean clearAccessToken(User user) {
@@ -88,7 +82,7 @@ public class UserService implements BaseDataService<User> {
 			user.setAccessToken(null);
 			this.update(user);
 			return true;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 
